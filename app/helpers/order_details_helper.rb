@@ -6,4 +6,8 @@ module OrderDetailsHelper
         | #{I18n.t 'stock'} - #{t.stock}", t.id]
     end
   end
+
+  def check_order_paid id
+    !Order.find_by(id: id).paid?
+  end
 end
