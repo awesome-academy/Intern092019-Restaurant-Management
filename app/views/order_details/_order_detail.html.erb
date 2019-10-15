@@ -5,7 +5,21 @@
     <p class="product_name"><%= order_detail.product_name %></p>
   </td>
   <td><%= order_detail.price %></td>
-  <td><%= order_detail.quantily %></td>
-  <td><%= order_detail.amount %></td>
-  <%= render "button_detail" %>
+  <td>
+  <% if check_order_paid params[:order_id] %>
+    <input type="number" id="order-detail-quantily-<%= order_detail.id %>" min="1"
+      value="<%= order_detail.quantily %>" onchange="update_amount(<%= params[:order_id] %>, <%= order_detail.id %>);">
+  <% else %>
+    <span class="label label-info"><%= order_detail.quantily %></span>
+  <% end %>
+  </td>
+  <td id="order-detail-amount-<%= order_detail.id %>"><%= order_detail.amount %></td>
+  <td>
+  <% if check_order_paid params[:order_id] %>
+    <%= link_to "/orders/#{params[:order_id]}/order_details/#{order_detail.id}", method: :delete,
+      data: {confirm: t("delete_confirm")} do %>
+      <button class="btn btn-danger"><%= t "delete" %></button>
+    <% end %>
+  <% end %>
+  </td>
 </tr>

@@ -16,10 +16,12 @@
         <%= t "details" %>
       </button>
     <% end %>
-    <%= link_to order_order_details_path(order), class: "btn-order-edit", method: :get do %>
+    <% if order.accepted? || order.paid? %>
+      <%= link_to order_order_details_path(order), class: "btn-order-edit", method: :get do %>
       <button class="btn btn-success">
         <%= t "order" %>
       </button>
+      <% end %>
     <% end %>
   </div>
 </div>
