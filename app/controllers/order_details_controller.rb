@@ -21,8 +21,11 @@ class OrderDetailsController < ApplicationController
     end
   end
 
-  private
+  def update
 
+  end
+
+  private
   def order_detail_params
     params.require(:order_detail).permit(OrderDetail::ORDER_DETAIL_PARAMS)
           .merge(price: load_product_price, amount: load_product_price)
@@ -31,5 +34,4 @@ class OrderDetailsController < ApplicationController
   def load_product_price
     g_price = Product.find_by(id: params[:order_detail][:product_id]).price
     return g_price if g_price.present?
-  end
 end
