@@ -1,5 +1,5 @@
 class Admin::CategoriesController < AdminController
-  before_action :not_login
+  before_action :authenticate_user!
   before_action :check_admin
   before_action :load_category, only: %i(edit update destroy)
 
