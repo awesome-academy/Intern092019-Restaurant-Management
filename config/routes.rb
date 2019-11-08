@@ -3,6 +3,8 @@ Rails.application.routes.draw do
     root "static_pages#home"
 
     get "admin/dashboard", to: "admin#dashboard"
+    devise_for :users, controllers: { sessions: "users/sessions", registrations: "users/registrations" }
+    resources :users, only: [:show, :edit, :update]
 
     namespace :admin do
       resources :tables do
@@ -35,19 +37,11 @@ Rails.application.routes.draw do
       end
       resources :users do
         collection do
-          get :search, to: "users#search"
-          get :sort, to: "users#sort"
+          delete ":id", to: "admin/users#destroy", as: :destroy_user
+          get :search, to: "admin/users#search"
+          get :sort, to: "admin/users#sort"
         end
       end
     end
-
-    resources :password_resets, except: %i(show index destroy)
-
-    get "/signup", to: "admin/users#new"
-    get "/login", to: "sessions#new"
-
-    post "/login", to: "sessions#create"
-
-    delete "/logout", to: "sessions#destroy"
   end
 end

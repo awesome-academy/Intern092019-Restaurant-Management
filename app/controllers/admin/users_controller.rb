@@ -1,11 +1,7 @@
 class Admin::UsersController < AdminController
-  before_action :find_user, except: %i(index new create search sort)
+  before_action :authenticate_user!
+  before_action :find_user, only: %i(show edit update correct_user)
   before_action :correct_user, only: %i(show edit update)
-
-  def index
-    @users = User.page(params[:page]).per Settings.pagenate_user
-    return if check_admin
-  end
 
   def show; end
 
@@ -83,16 +79,6 @@ class Admin::UsersController < AdminController
                                  :password, :password_confirmation
   end
 
-  def attach_image
-    if params[:user][:image].blank?
-      @user.image.attach io: File.open(Rails.root
-        .join("app", "assets", "images", "default_user.png")),
-        filename: "category.png"
-    else
-      @user.image.attach params[:user][:image]
-    end
-  end
-
   def find_user
     return if @user = User.find_by(id: params[:id])
 
@@ -100,19 +86,13 @@ class Admin::UsersController < AdminController
     redirect_to root_path
   end
 
-  def check_admin
-    return true if current_user&.admin?
-
-    flash[:danger] = t "access_denied"
-    redirect_to root_path
-  end
-
-  def set_role
-    if params[:user][:role].present? &&
-       @user.update(role: params[:user][:role].to_i)
-      flash[:success] = t "edit_user_succ"
+  def attach_image
+    if params[:user][:image].blank?
+      @user.image.attach io: File.open(Rails.root
+        .join("app", "assets", "images", "default_user.png")),
+        filename: "category.png"
     else
-      flash[:danger] = t "user_update_fail"
+      @user.image.attach params[:user][:image]
     end
     redirect_to admin_users_path
   end
